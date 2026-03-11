@@ -15,14 +15,6 @@ from config import SERVER_PORT, SERVER_HOST, BUFFER_SIZE
 
 init(autoreset=True)
 
-# Kết nối server (sửa SERVER_HOST trong config.py nếu server chạy máy khác)
-try:
-    client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    client_socket.connect((SERVER_HOST, SERVER_PORT))
-except Exception as e:
-    print(f"Cannot connect to server: {e}")
-    sys.exit(1)
-
 COLORS = {
     "red": Fore.RED,
     "green": Fore.GREEN,
@@ -45,11 +37,11 @@ def print_message(message):
         print(message)
 
 
-def receive_message():
+def receive_message(sock):
     """Luồng nhận message từ server"""
     while True:
         try:
-            data = client_socket.recv(BUFFER_SIZE).decode()
+            data = sock.recv(BUFFER_SIZE).decode()
             if not data:
                 break
             print_message(data)
@@ -58,36 +50,48 @@ def receive_message():
         except Exception:
             break
     try:
-        client_socket.close()
+        sock.close()
     except Exception:
         pass
 
 
-def send_message():
+def send_message(sock):
     """Luồng gửi message từ bàn phím lên server"""
     while True:
         try:
             msg = input()
             # Gửi trước, sau đó mới đóng (để server nhận được /leave)
             if msg.strip().lower() == "/leave":
-                client_socket.send(msg.encode())
-                client_socket.close()
+                sock.send(msg.encode())
+                sock.close()
                 return
-            client_socket.send(msg.encode())
+            sock.send(msg.encode())
         except (ConnectionResetError, OSError, BrokenPipeError):
             break
         except Exception:
             break
     try:
-        client_socket.close()
+        sock.close()
     except Exception:
         pass
 
 
-# Chạy 2 luồng
-recv_thread = threading.Thread(target=receive_message, daemon=True)
-send_thread = threading.Thread(target=send_message, daemon=True)
-recv_thread.start()
-send_thread.start()
-recv_thread.join()
-send_thread.join()
+def main():
+    """Kết nối server và chạy chat"""
+    try:
+        client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        client_socket.connect((SERVER_HOST, SERVER_PORT))
+    except Exception as e:
+        print(f"Cannot connect to server: {e}")
+        sys.exit(1)
+
+    recv_thread = threading.Thread(target=receive_message, args=(client_socket,), daemon=True)
+    send_thread = threading.Thread(target=send_message, args=(client_socket,), daemon=True)
+    recv_thread.start()
+    send_thread.start()
+    recv_thread.join()
+    send_thread.join()
+
+
+if __name__ == "__main__":
+    main()
