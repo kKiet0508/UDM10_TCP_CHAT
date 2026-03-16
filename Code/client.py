@@ -13,7 +13,7 @@ from colorama import Fore, Style, init
 
 from config import SERVER_PORT, SERVER_HOST, BUFFER_SIZE
 
-init(autoreset=True)
+init(autoreset=True, convert=True)  # convert=True cần cho Windows
 
 COLORS = {
     "red": Fore.RED,
@@ -27,24 +27,34 @@ COLORS = {
 
 
 def print_message(message):
-    """In message, hỗ trợ format /color: username: /color <mau> <nội dung>"""
+    """In message. Format: [Client] user: ... hoac [Server] ... Hỗ trợ /color."""
     parts = message.split()
-    if len(parts) >= 4 and parts[1] == "/color" and parts[2].lower() in COLORS:
-        color = COLORS[parts[2].lower()]
-        content = parts[0] + " " + " ".join(parts[3:])
-        print(color + content + Style.RESET_ALL)
-    else:
-        print(message)
+    # Tìm /color trong message (vd: [Client] Phat: /color red hello)
+    for i, p in enumerate(parts):
+        if p == "/color" and i + 1 < len(parts):
+            color_name = parts[i + 1].strip("<>").lower()
+            if color_name in COLORS:
+                content = " ".join(parts[:i] + parts[i + 2:])
+                print(COLORS[color_name] + content + Style.RESET_ALL, flush=True)
+                return
+            break
+    print(message)
 
 
 def receive_message(sock):
-    """Luồng nhận message từ server"""
+    """Luồng nhận message từ server (phân tách theo \\n)"""
+    buffer = ""
     while True:
         try:
             data = sock.recv(BUFFER_SIZE).decode()
             if not data:
                 break
-            print_message(data)
+            buffer += data
+            while "\n" in buffer:
+                msg, buffer = buffer.split("\n", 1)
+                msg = msg.strip()
+                if msg:
+                    print_message(msg)
         except (ConnectionResetError, OSError):
             break
         except Exception:
@@ -55,13 +65,32 @@ def receive_message(sock):
         pass
 
 
+HELP_TEXT = """
+--- LENH CHAT (go dung nhu vi du, KHONG dung dau < >) ---
+/list                    Xem user online
+/private kiet xin chao    Tin nhan rieng (vd: /private thuong hello)
+/color red hello          Tin nhan mau (mau: red,green,yellow,blue,magenta,cyan,white)
+/leave                    Thoat chat
+/help                     Xem lai huong dan
+"""
+
+
 def send_message(sock):
     """Luồng gửi message từ bàn phím lên server"""
     while True:
         try:
             msg = input()
+            stripped = msg.strip()
+            lower = stripped.lower()
+            # Gợi ý khi gõ / sai
+            if lower in ("/", "/?", "help"):
+                print(HELP_TEXT)
+                continue
+            if lower == "/help":
+                print(HELP_TEXT)
+                continue
             # Gửi trước, sau đó mới đóng (để server nhận được /leave)
-            if msg.strip().lower() == "/leave":
+            if lower == "/leave":
                 sock.send(msg.encode())
                 sock.close()
                 return

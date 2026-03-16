@@ -22,16 +22,16 @@ KICKED_MESSAGE = "You have been kicked from the chatroom."
 
 OPTIONS_MESSAGE = (
     "You are added to the chatroom. Messages you send are broadcast to other users.\n"
-    "Commands:\n"
-    "  /list                    - List connected clients\n"
-    "  /private <user> <msg>    - Send private message\n"
-    "  /color <color> <msg>     - Send colored message (red, green, yellow, blue, magenta, cyan, white)\n"
-    "  /leave                   - Leave the chatroom\n"
+    "Commands (KHONG dung dau < >, go dung nhu vi du):\n"
+    "  /list                          - Xem danh sach user dang online\n"
+    "  /private username message      - Vi du: /private kiet xin chao\n"
+    "  /color mau message             - Vi du: /color red hello\n"
+    "  /leave                         - Thoat chat\n"
+    "  /help                          - Xem lai huong dan\n"
 )
-# Admin-only commands (thêm vào OPTIONS nếu user là admin)
 ADMIN_OPTIONS = (
-    "  /kick <username>         - Kick user (admin only)\n"
-    "  /ban <username>          - Ban user (admin only)\n"
+    "  /kick username         - Vi du: /kick thuong\n"
+    "  /ban username          - Vi du: /ban kiet\n"
 )
 
 
