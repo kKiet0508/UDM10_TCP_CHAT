@@ -24,6 +24,7 @@
 | **Multi-client** | Server xử lý nhiều client cùng lúc |
 | **Broadcast** | Tin nhắn từ 1 client gửi tới tất cả |
 | **CMD Interface** | Giao diện dòng lệnh đơn giản |
+| Còn |  |
 
 ---
 
