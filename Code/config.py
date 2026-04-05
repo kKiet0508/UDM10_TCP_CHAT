@@ -1,8 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Người 1 — Cấu hình chung: port, host, buffer, admin, toàn bộ chuỗi hệ thống.
-Cấu hình chung cho Server và Client - UDM_10 Chat Console via TCP
-"""
 
 import socket
 
@@ -36,6 +31,3 @@ ADMIN_OPTIONS = (
 )
 
 
-def get_server_address():
-    """Lấy địa chỉ server (dùng gethostname nếu chạy cùng máy)"""
-    return socket.gethostbyname(socket.gethostname())
