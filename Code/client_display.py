@@ -1,4 +1,6 @@
-
+'''
+hien tin nhan tu server va khoi chay client
+'''
 from colorama import Fore, Style, init
 
 from config import BUFFER_SIZE
