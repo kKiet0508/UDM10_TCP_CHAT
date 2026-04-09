@@ -44,16 +44,24 @@ def print_message(message):
 def receive_message(sock):
     """Nhan du lieu tu socket va hien thi len man hinh."""
     buffer = ""
+    message_count =0
     while True:
         try:
             data = sock.recv(BUFFER_SIZE).decode()
             if not data:
                 break
+            if data.strip() == "":
+                continue
             buffer += data
             while "\n" in buffer:
                 msg, buffer = buffer.split("\n", 1)
                 msg = msg.strip()
-                if msg:
+                if len(msg) > 0:
+                    message_count += 1
+                if msg.startswith("[ERROR]"):
+                        print("[He thong] Loi tu server")
+                    elif msg.startswith("[INFO]"):
+                        print("[He thong] Thong tin")
                     print_message(msg)
         except (ConnectionResetError, OSError):
             break
