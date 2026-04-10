@@ -54,19 +54,17 @@ def _add_client(connection_socket, user_name, addr):
         username_to_addr[user_name]  = str(addr)
         connected_clients[str(addr)] = connection_socket
 
-    print(f"{user_name} da ket noi...")  
+    print(f"{user_name} da ket noi.")  
 
     import server_channels as ch
     from server_control import manage_clients
 
-    ch.send_to_all_clients(f"[Clinet] {user_name} vua vao phong chat.", connection_socket)  
+    ch.send_to_all_clients(f"[Client] {user_name} vua vao phong chat.", connection_socket)  
     
     options = OPTIONS_MESSAGE
     if user_name == ADMIN_USERNAME:
-        options += "\nAdmin command:\n" + ADMIN_OPTIONS   
-
-    connection_socket.send(options.encode())  
-
+        options += "\nAdmin commands:\n" + ADMIN_OPTIONS
+    connection_socket.send((options + "\n").encode())
     t = threading.Thread(target=manage_clients, args=(connection_socket, addr))
     t.daemon = True
     t.start()
@@ -77,27 +75,22 @@ def _accept_loop(server_socket):
     while True:
         try:
             conn, addr = server_socket.accept()
-            conn.send((WELCOME_MESSAGE + "\n").encode())  
-
+            conn.send((WELCOME_MESSAGE.strip() + "\n").encode())  
             user_name = conn.recv(BUFFER_SIZE).decode().strip()
-
             if not user_name:
-                conn.send("Ten nguoi dung khong duoc de trong..".encode()) 
+                conn.send("Ten nguoi dung khong duoc de trong.".encode()) 
                 conn.close()
                 continue  
             if _is_banned(user_name):
                 conn.send(BANNED_MESSAGE.encode())
                 conn.close()
                 continue
-
             if _is_username_taken(user_name):
                 conn.send(DUPLICATE_USERNAME_MESSAGE.encode())
                 conn.close()
                 continue
-
             with lock:
                 pending_connections.append((conn, addr, user_name))
-
         except Exception as e:
             if server_socket.fileno() != -1:
-                print(f"Loi chap nhan ket noi : {e}") 
+                print(f"Loi chap nhan ket noi: {e}") 
