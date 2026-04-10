@@ -28,10 +28,12 @@ def send_message(sock):
                 print(HELP_TEXT)
                 continue
             if msg.strip().lower() == "/leave":
-                sock.send(msg.encode())
-                sock.close()
+                try:
+                    sock.sendall(msg.encode("utf-8"))
+                finally:
+                    sock.close()
                 return
-            sock.send(msg.encode())
+            sock.sendall(msg.encode("utf-8"))
         except (ConnectionResetError, OSError, BrokenPipeError):
             break
     try:
