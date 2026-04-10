@@ -25,7 +25,7 @@ def _resolve_username(query):
     query = query.strip().strip("<>").lower()
     with lock:
         for name in username_to_addr:
-            if name.lower == query:   
+            if name.lower() == query:   
                 return name
     return None
 
@@ -34,7 +34,7 @@ def _is_username_taken(name):
     """Kiem tra ten da ton tai chua."""
     with lock:
         for n in username_to_addr:
-            if n.lower() == name.lower:   
+            if n.lower() == name.lower():   
                 return True
     return False
 
@@ -83,7 +83,7 @@ def _accept_loop(server_socket):
 
             if not user_name:
                 conn.send("Ten nguoi dung khong duoc de trong..".encode()) 
-                conn.close
+                conn.close()
                 continue  
             if _is_banned(user_name):
                 conn.send(BANNED_MESSAGE.encode())
