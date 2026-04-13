@@ -1,55 +1,122 @@
-# 💬 Lập Trình Mạng - TCP CHAT CMD
+# 💬 TCP Chat Application (CLI)
 
-> **Project:** UDM_10  
-> **Language:** Python  
-> **Mô hình:** Client-Server TCP qua giao diện Command Line
+> Ứng dụng chat đơn giản sử dụng TCP Socket trong Python, chạy trên Command Line theo mô hình Client - Server.
 
 ---
 
 ## 📐 Mô hình hoạt động
 
+```text
+Client ⇄ Server ⇄ Client
+           │
+    Broadcast / Private
 ```
-[Client 1] ──┐
-[Client 2] ──┤── TCP ──► [Server] ──► Broadcast tin nhắn tới tất cả client
-[Client 3] ──┘
-```
+
+* Server xử lý kết nối và quản lý user
+* Client gửi và nhận tin nhắn
 
 ---
 
 ## 🔧 Tính năng
 
-| Tính năng | Mô tả |
-|-----------|-------|
-| **TCP Connection** | Kết nối ổn định giữa Client và Server |
-| **Multi-client** | Server xử lý nhiều client cùng lúc |
-| **Broadcast** | Tin nhắn từ 1 client gửi tới tất cả |
-| **CMD Interface** | Giao diện dòng lệnh đơn giản |
-| Còn |  |
+* Kết nối TCP giữa client và server
+* Hỗ trợ nhiều client cùng lúc
+* Gửi tin nhắn tới tất cả (broadcast)
+* Nhắn tin riêng giữa các user
+* Kiểm tra username hợp lệ
+* Hỗ trợ admin (kick / ban user)
+* Hiển thị tin nhắn có màu
 
 ---
 
 ## 🚀 Cách chạy
 
-### Chạy Server trước
+### 1. Chạy Server
+
 ```bash
-python server.py
+python Code/server.py
 ```
 
-### Chạy Client (mở nhiều terminal)
+### 2. Chạy Client (mở nhiều terminal)
+
 ```bash
-python client.py
+python Code/client.py
+```
+
+---
+
+## 👤 Đăng nhập
+
+* Nhập username khi kết nối
+* Độ dài: 3–32 ký tự
+* Không được trùng với user khác
+
+---
+
+## 📜 Lệnh sử dụng
+
+### Client
+
+```text
+/list                 Xem danh sách user online
+/private user msg     Nhắn tin riêng
+/color red hello      Gửi tin nhắn có màu
+/leave                Thoát chat
+/help                 Xem hướng dẫn
+```
+
+### Admin (username = admin)
+
+```text
+/kick user            Đá user khỏi phòng
+/ban user             Cấm user
 ```
 
 ---
 
 ## 📁 Cấu trúc project
 
+```text
+.
+├── Code/
+│   ├── client.py               # Chạy client
+│   ├── client_display.py       # Nhận và hiển thị tin nhắn
+│   ├── client_transport.py     # Kết nối server và gửi dữ liệu
+│   ├── server.py               # Chạy server
+│   ├── server_control.py       # Xử lý lệnh và logic server
+│   ├── server_registry.py      # Quản lý danh sách user
+│   ├── server_channels.py      # Broadcast và private message
+│   ├── validation.py           # Kiểm tra dữ liệu đầu vào
+│   └── config.py               # Cấu hình hệ thống
+├── Docx/                       # Tài liệu báo cáo
+├── Extra/                      # Tài liệu tham khảo
+├── PPTX/                       # Slide thuyết trình
+├── README_TCP.md
+└── TCP_CHAT_CMD.xlsx
+```
 
 
 ---
 
-## 💡 Kiến thức áp dụng
+## ⚙️ Cấu hình
 
-- **TCP Socket** - Lập trình mạng tầng Transport
-- **Multi-threading** - Xử lý nhiều client đồng thời
-- **Client-Server Model** - Mô hình mạng cơ bản
+Trong `Code/config.py`:
+
+```python
+SERVER_HOST = "127.0.0.1"
+SERVER_PORT = 1234
+```
+
+---
+
+## ⚠️ Lưu ý
+
+* Chạy server trước khi chạy client
+* Nếu không kết nối được → kiểm tra IP và port
+* Tài khoản admin: `admin`
+
+---
+
+## 📌 Trạng thái
+
+✔️ Hoàn thành
