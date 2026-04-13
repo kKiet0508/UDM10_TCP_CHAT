@@ -117,6 +117,4 @@ SERVER_PORT = 1234
 
 ---
 
-## 📌 Trạng thái
 
-✔️ Hoàn thành
