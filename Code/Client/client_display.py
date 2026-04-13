@@ -1,6 +1,7 @@
-'''
-hien tin nhan tu server va khoi chay client
-'''
+# -*- coding: utf-8 -*-
+"""
+Hien tin nhan tu server va khoi chay client
+"""
 from colorama import Fore, Style, init
 
 from config import BUFFER_SIZE
@@ -8,13 +9,13 @@ from config import BUFFER_SIZE
 init(autoreset=True, convert=True)
 
 COLORS = {
-    "red":     Fore.RED,
-    "green":   Fore.GREEN,
-    "yellow":  Fore.YELLOW,
-    "blue":    Fore.BLUE,
+    "red": Fore.RED,
+    "green": Fore.GREEN,
+    "yellow": Fore.YELLOW,
+    "blue": Fore.BLUE,
     "magenta": Fore.MAGENTA,
-    "cyan":    Fore.CYAN,
-    "white":   Fore.WHITE,
+    "cyan": Fore.CYAN,
+    "white": Fore.WHITE,
 }
 
 HELP_TEXT = """
@@ -44,26 +45,20 @@ def print_message(message):
 def receive_message(sock):
     """Nhan du lieu tu socket va hien thi len man hinh."""
     buffer = ""
-    message_count =0
     while True:
         try:
-            data = sock.recv(BUFFER_SIZE).decode()
+            data = sock.recv(BUFFER_SIZE).decode("utf-8", errors="replace")
             if not data:
                 break
-            if data.strip() == "":
-                continue
             buffer += data
             while "\n" in buffer:
                 msg, buffer = buffer.split("\n", 1)
                 msg = msg.strip()
-                if len(msg) > 0:
-                    message_count += 1
-                if msg.startswith("[ERROR]"):
-                        print("[He thong] Loi tu server")
-                    elif msg.startswith("[INFO]"):
-                        print("[He thong] Thong tin")
+                if msg:
                     print_message(msg)
         except (ConnectionResetError, OSError):
+            break
+        except Exception:
             break
     try:
         sock.close()

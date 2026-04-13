@@ -15,6 +15,7 @@ from config import (
 )
 import server_registry as reg
 import server_channels as ch
+from validation import validate_chat_line
 
 
 def manage_clients(connection_socket, addr):
@@ -24,11 +25,16 @@ def manage_clients(connection_socket, addr):
 
     while True:
         try:
-            raw = connection_socket.recv(BUFFER_SIZE).decode()
+            raw = connection_socket.recv(BUFFER_SIZE).decode("utf-8", errors="replace")
             if not raw:
                 break
             msg_body = raw.strip()
             if not msg_body:
+                continue
+
+            ok_len, len_msg = validate_chat_line(msg_body)
+            if not ok_len:
+                ch.send_private_message(connection_socket, len_msg)
                 continue
 
             # Thoat khoi phong chat
