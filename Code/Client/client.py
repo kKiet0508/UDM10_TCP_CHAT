@@ -2,7 +2,13 @@
 """
 Diem vao chay client: khoi tao 2 luong gui va nhan tin nhan song song.
 """
+import os
+import 
 import threading
+
+_SERVER_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "ver"))
+# Đảm bảo import `config`/`validation` sẽ lấy từ thư mục server dùng chung.
+sys.path.insert(0, _SERVER_DIR)
 
 from client_display import receive_message
 from client_transport import connect_client_socket, send_message
