@@ -1,12 +1,12 @@
-# -*- coding: utf-8 -*-
+
 """
 Diem vao chay client: khoi tao 2 luong gui va nhan tin nhan song song.
 """
 import os
-import 
+import sys
 import threading
 
-_SERVER_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "ver"))
+_SERVER_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "Sever"))
 # Đảm bảo import `config`/`validation` sẽ lấy từ thư mục server dùng chung.
 sys.path.insert(0, _SERVER_DIR)
 
